@@ -1,0 +1,38 @@
+{
+  "name": "galeria-imagenes",
+  "version": "1.0.0",
+  "description": "Proyecto tutorial para practicar el uso de express con typescript",
+  "keywords": [
+    "express"
+  ],
+  "license": "ISC",
+  "author": "Alexander Bolaños",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "dev": "ts-node -r tsconfig-paths/register src/main.ts",
+    "start": "node dist/main.js",
+    "build": "tsc && tsc-alias",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "prisma-initial-migration": "npx prisma migrate dev --name init",
+    "prisma-generate-client": "prisma generate"
+  },
+  "dependencies": {
+    "@prisma/adapter-better-sqlite3": "^7.7.0",
+    "@prisma/client": "^7.7.0",
+    "@types/express": "^5.0.6",
+    "express": "^5.2.1"
+  },
+  "devDependencies": {
+    "@types/better-sqlite3": "^7.6.13",
+    "@types/node": "^25.6.0",
+    "dotenv": "^17.4.2",
+    "prisma": "^7.7.0",
+    "ts-node": "^10.9.2",
+    "ts-node-dev": "^2.0.0",
+    "tsc-alias": "^1.8.16",
+    "tsconfig-paths": "^4.2.0",
+    "tsx": "^4.21.0",
+    "typescript": "^6.0.3"
+  }
+}
