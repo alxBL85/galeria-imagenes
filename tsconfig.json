@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "outDir": "./dist",
-    "rootDir": "./",
+    "rootDir": "./src",
     "module": "ESNext",
     "moduleResolution": "bundler",
     "target": "ES2023",
@@ -16,5 +16,7 @@
       "@infrastructure/*": ["infrastructure/*"],
       "@interfaces/*": ["interfaces/*"]
     }
-  }
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "dist"]
 }

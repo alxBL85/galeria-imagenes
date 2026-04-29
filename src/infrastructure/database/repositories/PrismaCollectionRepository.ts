@@ -1,6 +1,6 @@
 import { Collection } from "@domain/entities/Collection";
 import { CollectionRepository } from "@domain/repositories/CollectionRepository";
-import { Collection as PrismaCollection } from "@prisma/client";
+import { CollectionModel as PrismaCollection } from "../prisma/client/models/Collection";
 import { prisma } from "../prisma/client";
 
 export class PrismaCollectionRepository implements CollectionRepository {
