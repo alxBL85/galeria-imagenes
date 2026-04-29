@@ -1,4 +1,4 @@
-import { createServer } from "interfaces/http/server";
+import { createServer } from "@interfaces/http/server";
 
 const server = createServer();
 

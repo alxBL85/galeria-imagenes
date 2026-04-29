@@ -151,7 +151,7 @@ galeria-imagenes/
 
 | Script | Descripción |
 |--------|-------------|
-| `npm run dev` | Inicia el servidor en modo desarrollo con recompilación automática (ts-node) |
+| `npm run dev` | Inicia el servidor en modo desarrollo con recompilación automática (tsx) |
 | `npm start` | Inicia la aplicación compilada en producción |
 | `npm run build` | Compila TypeScript a JavaScript y aplica alias de ruta |
 | `npm run prisma-initial-migration` | Crea la migración inicial de base de datos |
@@ -350,7 +350,7 @@ curl -X GET http://localhost:3000/collections/user/user-001
 - **ORM**: Prisma v7.7.0
 - **Base de Datos**: SQLite
 - **Herramientas**:
-  - `ts-node`: Ejecución de TypeScript sin compilación
+  - `tsx`: Ejecutor TypeScript con soporte nativo para módulos ES y path aliases
   - `multer`: Manejo de carga de archivos
   - `dotenv`: Gestión de variables de entorno
   - `tsx`: Ejecutor TypeScript alternativo
@@ -376,9 +376,8 @@ curl -X GET http://localhost:3000/collections/user/user-001
   "@types/node": "^25.6.0",
   "dotenv": "^17.4.2",
   "prisma": "^7.7.0",
-  "ts-node": "^10.9.2",
   "tsc-alias": "^1.8.16",
-  "tsconfig-paths": "^4.2.0",
+  "tsx": "^4.21.0",
   "typescript": "^6.0.3"
 }
 ```
