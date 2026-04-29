@@ -56,3 +56,8 @@ export type Collection = Prisma.CollectionModel
  * 
  */
 export type Image = Prisma.ImageModel
+/**
+ * Model Comment
+ * 
+ */
+export type Comment = Prisma.CommentModel

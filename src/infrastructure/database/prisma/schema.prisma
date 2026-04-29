@@ -12,6 +12,7 @@ model User {
   email       String  @unique
   password    String
   collections Collection[]
+  comments    Comment[]
 }
 
 model Collection {
@@ -34,4 +35,20 @@ model Image {
   collectionId  String
 
   collection    Collection @relation(fields: [collectionId], references: [id])
+  comments      Comment[]
+}
+
+model Comment {
+  id              String    @id
+  content         String
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  userId          String
+  imageId         String
+  parentCommentId String?
+
+  user            User      @relation(fields: [userId], references: [id])
+  image           Image     @relation(fields: [imageId], references: [id])
+  parentComment   Comment?  @relation("CommentReplies", fields: [parentCommentId], references: [id])
+  replies         Comment[] @relation("CommentReplies")
 }

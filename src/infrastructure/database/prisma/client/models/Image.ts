@@ -191,6 +191,7 @@ export type ImageWhereInput = {
   createdAt?: Prisma.DateTimeFilter<"Image"> | Date | string
   collectionId?: Prisma.StringFilter<"Image"> | string
   collection?: Prisma.XOR<Prisma.CollectionScalarRelationFilter, Prisma.CollectionWhereInput>
+  comments?: Prisma.CommentListRelationFilter
 }
 
 export type ImageOrderByWithRelationInput = {
@@ -201,6 +202,7 @@ export type ImageOrderByWithRelationInput = {
   createdAt?: Prisma.SortOrder
   collectionId?: Prisma.SortOrder
   collection?: Prisma.CollectionOrderByWithRelationInput
+  comments?: Prisma.CommentOrderByRelationAggregateInput
 }
 
 export type ImageWhereUniqueInput = Prisma.AtLeast<{
@@ -214,6 +216,7 @@ export type ImageWhereUniqueInput = Prisma.AtLeast<{
   createdAt?: Prisma.DateTimeFilter<"Image"> | Date | string
   collectionId?: Prisma.StringFilter<"Image"> | string
   collection?: Prisma.XOR<Prisma.CollectionScalarRelationFilter, Prisma.CollectionWhereInput>
+  comments?: Prisma.CommentListRelationFilter
 }, "id">
 
 export type ImageOrderByWithAggregationInput = {
@@ -247,6 +250,7 @@ export type ImageCreateInput = {
   path: string
   createdAt: Date | string
   collection: Prisma.CollectionCreateNestedOneWithoutImagesInput
+  comments?: Prisma.CommentCreateNestedManyWithoutImageInput
 }
 
 export type ImageUncheckedCreateInput = {
@@ -256,6 +260,7 @@ export type ImageUncheckedCreateInput = {
   path: string
   createdAt: Date | string
   collectionId: string
+  comments?: Prisma.CommentUncheckedCreateNestedManyWithoutImageInput
 }
 
 export type ImageUpdateInput = {
@@ -265,6 +270,7 @@ export type ImageUpdateInput = {
   path?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   collection?: Prisma.CollectionUpdateOneRequiredWithoutImagesNestedInput
+  comments?: Prisma.CommentUpdateManyWithoutImageNestedInput
 }
 
 export type ImageUncheckedUpdateInput = {
@@ -274,6 +280,7 @@ export type ImageUncheckedUpdateInput = {
   path?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   collectionId?: Prisma.StringFieldUpdateOperationsInput | string
+  comments?: Prisma.CommentUncheckedUpdateManyWithoutImageNestedInput
 }
 
 export type ImageCreateManyInput = {
@@ -339,6 +346,11 @@ export type ImageMinOrderByAggregateInput = {
   collectionId?: Prisma.SortOrder
 }
 
+export type ImageScalarRelationFilter = {
+  is?: Prisma.ImageWhereInput
+  isNot?: Prisma.ImageWhereInput
+}
+
 export type ImageCreateNestedManyWithoutCollectionInput = {
   create?: Prisma.XOR<Prisma.ImageCreateWithoutCollectionInput, Prisma.ImageUncheckedCreateWithoutCollectionInput> | Prisma.ImageCreateWithoutCollectionInput[] | Prisma.ImageUncheckedCreateWithoutCollectionInput[]
   connectOrCreate?: Prisma.ImageCreateOrConnectWithoutCollectionInput | Prisma.ImageCreateOrConnectWithoutCollectionInput[]
@@ -381,12 +393,27 @@ export type ImageUncheckedUpdateManyWithoutCollectionNestedInput = {
   deleteMany?: Prisma.ImageScalarWhereInput | Prisma.ImageScalarWhereInput[]
 }
 
+export type ImageCreateNestedOneWithoutCommentsInput = {
+  create?: Prisma.XOR<Prisma.ImageCreateWithoutCommentsInput, Prisma.ImageUncheckedCreateWithoutCommentsInput>
+  connectOrCreate?: Prisma.ImageCreateOrConnectWithoutCommentsInput
+  connect?: Prisma.ImageWhereUniqueInput
+}
+
+export type ImageUpdateOneRequiredWithoutCommentsNestedInput = {
+  create?: Prisma.XOR<Prisma.ImageCreateWithoutCommentsInput, Prisma.ImageUncheckedCreateWithoutCommentsInput>
+  connectOrCreate?: Prisma.ImageCreateOrConnectWithoutCommentsInput
+  upsert?: Prisma.ImageUpsertWithoutCommentsInput
+  connect?: Prisma.ImageWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ImageUpdateToOneWithWhereWithoutCommentsInput, Prisma.ImageUpdateWithoutCommentsInput>, Prisma.ImageUncheckedUpdateWithoutCommentsInput>
+}
+
 export type ImageCreateWithoutCollectionInput = {
   id: string
   name: string
   description: string
   path: string
   createdAt: Date | string
+  comments?: Prisma.CommentCreateNestedManyWithoutImageInput
 }
 
 export type ImageUncheckedCreateWithoutCollectionInput = {
@@ -395,6 +422,7 @@ export type ImageUncheckedCreateWithoutCollectionInput = {
   description: string
   path: string
   createdAt: Date | string
+  comments?: Prisma.CommentUncheckedCreateNestedManyWithoutImageInput
 }
 
 export type ImageCreateOrConnectWithoutCollectionInput = {
@@ -434,6 +462,58 @@ export type ImageScalarWhereInput = {
   collectionId?: Prisma.StringFilter<"Image"> | string
 }
 
+export type ImageCreateWithoutCommentsInput = {
+  id: string
+  name: string
+  description: string
+  path: string
+  createdAt: Date | string
+  collection: Prisma.CollectionCreateNestedOneWithoutImagesInput
+}
+
+export type ImageUncheckedCreateWithoutCommentsInput = {
+  id: string
+  name: string
+  description: string
+  path: string
+  createdAt: Date | string
+  collectionId: string
+}
+
+export type ImageCreateOrConnectWithoutCommentsInput = {
+  where: Prisma.ImageWhereUniqueInput
+  create: Prisma.XOR<Prisma.ImageCreateWithoutCommentsInput, Prisma.ImageUncheckedCreateWithoutCommentsInput>
+}
+
+export type ImageUpsertWithoutCommentsInput = {
+  update: Prisma.XOR<Prisma.ImageUpdateWithoutCommentsInput, Prisma.ImageUncheckedUpdateWithoutCommentsInput>
+  create: Prisma.XOR<Prisma.ImageCreateWithoutCommentsInput, Prisma.ImageUncheckedCreateWithoutCommentsInput>
+  where?: Prisma.ImageWhereInput
+}
+
+export type ImageUpdateToOneWithWhereWithoutCommentsInput = {
+  where?: Prisma.ImageWhereInput
+  data: Prisma.XOR<Prisma.ImageUpdateWithoutCommentsInput, Prisma.ImageUncheckedUpdateWithoutCommentsInput>
+}
+
+export type ImageUpdateWithoutCommentsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.StringFieldUpdateOperationsInput | string
+  path?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  collection?: Prisma.CollectionUpdateOneRequiredWithoutImagesNestedInput
+}
+
+export type ImageUncheckedUpdateWithoutCommentsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.StringFieldUpdateOperationsInput | string
+  path?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  collectionId?: Prisma.StringFieldUpdateOperationsInput | string
+}
+
 export type ImageCreateManyCollectionInput = {
   id: string
   name: string
@@ -448,6 +528,7 @@ export type ImageUpdateWithoutCollectionInput = {
   description?: Prisma.StringFieldUpdateOperationsInput | string
   path?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  comments?: Prisma.CommentUpdateManyWithoutImageNestedInput
 }
 
 export type ImageUncheckedUpdateWithoutCollectionInput = {
@@ -456,6 +537,7 @@ export type ImageUncheckedUpdateWithoutCollectionInput = {
   description?: Prisma.StringFieldUpdateOperationsInput | string
   path?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  comments?: Prisma.CommentUncheckedUpdateManyWithoutImageNestedInput
 }
 
 export type ImageUncheckedUpdateManyWithoutCollectionInput = {
@@ -467,6 +549,35 @@ export type ImageUncheckedUpdateManyWithoutCollectionInput = {
 }
 
 
+/**
+ * Count Type ImageCountOutputType
+ */
+
+export type ImageCountOutputType = {
+  comments: number
+}
+
+export type ImageCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  comments?: boolean | ImageCountOutputTypeCountCommentsArgs
+}
+
+/**
+ * ImageCountOutputType without action
+ */
+export type ImageCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ImageCountOutputType
+   */
+  select?: Prisma.ImageCountOutputTypeSelect<ExtArgs> | null
+}
+
+/**
+ * ImageCountOutputType without action
+ */
+export type ImageCountOutputTypeCountCommentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.CommentWhereInput
+}
+
 
 export type ImageSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -476,6 +587,8 @@ export type ImageSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   createdAt?: boolean
   collectionId?: boolean
   collection?: boolean | Prisma.CollectionDefaultArgs<ExtArgs>
+  comments?: boolean | Prisma.Image$commentsArgs<ExtArgs>
+  _count?: boolean | Prisma.ImageCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["image"]>
 
 export type ImageSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -510,6 +623,8 @@ export type ImageSelectScalar = {
 export type ImageOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "description" | "path" | "createdAt" | "collectionId", ExtArgs["result"]["image"]>
 export type ImageInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   collection?: boolean | Prisma.CollectionDefaultArgs<ExtArgs>
+  comments?: boolean | Prisma.Image$commentsArgs<ExtArgs>
+  _count?: boolean | Prisma.ImageCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type ImageIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   collection?: boolean | Prisma.CollectionDefaultArgs<ExtArgs>
@@ -522,6 +637,7 @@ export type $ImagePayload<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   name: "Image"
   objects: {
     collection: Prisma.$CollectionPayload<ExtArgs>
+    comments: Prisma.$CommentPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -925,6 +1041,7 @@ readonly fields: ImageFieldRefs;
 export interface Prisma__ImageClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   collection<T extends Prisma.CollectionDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.CollectionDefaultArgs<ExtArgs>>): Prisma.Prisma__CollectionClient<runtime.Types.Result.GetResult<Prisma.$CollectionPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  comments<T extends Prisma.Image$commentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Image$commentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CommentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1356,6 +1473,30 @@ export type ImageDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.Interna
    * Limit how many Images to delete.
    */
   limit?: number
+}
+
+/**
+ * Image.comments
+ */
+export type Image$commentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Comment
+   */
+  select?: Prisma.CommentSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Comment
+   */
+  omit?: Prisma.CommentOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.CommentInclude<ExtArgs> | null
+  where?: Prisma.CommentWhereInput
+  orderBy?: Prisma.CommentOrderByWithRelationInput | Prisma.CommentOrderByWithRelationInput[]
+  cursor?: Prisma.CommentWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.CommentScalarFieldEnum | Prisma.CommentScalarFieldEnum[]
 }
 
 /**
