@@ -23,6 +23,7 @@ Una API REST completa para gestionar una galería de imágenes con las siguiente
 - **Gestión de Usuarios**: Registro de nuevos usuarios
 - **Colecciones**: Creación de colecciones de imágenes y listado por usuario
 - **Imágenes**: Subida de imágenes a colecciones y listado por colección
+- **Comentarios**: Sistema de comentarios en imágenes con soporte para respuestas anidadas
 
 Este proyecto es un tutorial práctico para aprender **Clean Architecture** con **Express** y **TypeScript**.
 
@@ -71,11 +72,13 @@ galeria-imagenes/
 │   │   ├── entities/                             # Entidades del negocio
 │   │   │   ├── User.ts
 │   │   │   ├── Collection.ts
-│   │   │   └── Image.ts
+│   │   │   ├── Image.ts
+│   │   │   └── Comment.ts
 │   │   └── repositories/                         # Interfaces de repositorios
 │   │       ├── UserRepository.ts
 │   │       ├── CollectionRepository.ts
-│   │       └── ImageRepository.ts
+│   │       ├── ImageRepository.ts
+│   │       └── CommentRepository.ts
 │   ├── application/                              # Capa de aplicación
 │   │   └── use-cases/                            # Casos de uso
 │   │       ├── user/
@@ -83,9 +86,13 @@ galeria-imagenes/
 │   │       ├── collection/
 │   │       │   ├── CreateCollection.ts
 │   │       │   └── GetUserCollections.ts
-│   │       └── image/
-│   │           ├── UploadImage.ts
-│   │           └── GetCollectionImages.ts
+│   │       ├── image/
+│   │       │   ├── UploadImage.ts
+│   │       │   └── GetCollectionImages.ts
+│   │       └── comment/
+│   │           ├── CreateComment.ts
+│   │           ├── GetImageComments.ts
+│   │           └── ReplyToComment.ts
 │   ├── infrastructure/                           # Capa de infraestructura
 │   │   └── database/
 │   │       ├── prisma/
@@ -95,16 +102,19 @@ galeria-imagenes/
 │   │       └── repositories/
 │   │           ├── PrismaUserRepository.ts
 │   │           ├── PrismaCollectionRepository.ts
-│   │           └── PrismaImageRepository.ts
+│   │           ├── PrismaImageRepository.ts
+│   │           └── PrismaCommentRepository.ts
 │   └── interfaces/                               # Capa de interfaz HTTP
 │       ├── controllers/                          # Controladores Express
 │       │   ├── UserController.ts
 │       │   ├── CollectionController.ts
-│       │   └── ImageController.ts
+│       │   ├── ImageController.ts
+│       │   └── CommentController.ts
 │       ├── routes/                               # Definición de rutas
 │       │   ├── userRoutes.ts
 │       │   ├── collectionRoutes.ts
-│       │   └── ImageRoutes.ts
+│       │   ├── ImageRoutes.ts
+│       │   └── commentRoutes.ts
 │       └── http/
 │           └── server.ts                         # Configuración del servidor
 ├── package.json                                   # Dependencias del proyecto
@@ -139,7 +149,7 @@ galeria-imagenes/
 
 4. **Ejecutar migraciones de base de datos**
    ```bash
-   npm run prisma-initial-migration
+   npm run prisma-migrate
    ```
 
 5. **Generar cliente Prisma** (si no se generó automáticamente)
@@ -154,7 +164,8 @@ galeria-imagenes/
 | `npm run dev` | Inicia el servidor en modo desarrollo con recompilación automática (tsx) |
 | `npm start` | Inicia la aplicación compilada en producción |
 | `npm run build` | Compila TypeScript a JavaScript y aplica alias de ruta |
-| `npm run prisma-initial-migration` | Crea la migración inicial de base de datos |
+| `npm run prisma-migrate` | Aplica todas las migraciones pendientes y genera el cliente Prisma (desarrollo) |
+| `npm run prisma-migrate-deploy` | Aplica migraciones en producción sin generar cliente |
 | `npm run prisma-generate-client` | Regenera el cliente de Prisma |
 | `npm test` | Ejecuta los tests (no configurado aún) |
 
@@ -227,6 +238,25 @@ model Image {
   collectionId  String
   
   collection    Collection @relation(fields: [collectionId], references: [id])
+  comments      Comment[]
+}
+```
+
+#### Comment
+```prisma
+model Comment {
+  id              String    @id
+  content         String
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  userId          String
+  imageId         String
+  parentCommentId String?
+
+  user            User      @relation(fields: [userId], references: [id])
+  image           Image     @relation(fields: [imageId], references: [id])
+  parentComment   Comment?  @relation("CommentReplies", fields: [parentCommentId], references: [id])
+  replies         Comment[] @relation("CommentReplies")
 }
 ```
 
@@ -301,6 +331,38 @@ curl -X POST http://localhost:3000/images \
 curl -X GET http://localhost:3000/images/collection/col-123
 ```
 
+### Comentarios (`/comments`)
+
+| Método | Endpoint | Descripción | Body |
+|--------|----------|-------------|------|
+| POST | `/comments` | Crear comentario en imagen | `{ content, userId, imageId, parentCommentId? }` |
+| GET | `/comments/image/:imageId` | Listar comentarios de una imagen | - |
+
+**Ejemplo:**
+```bash
+# Crear comentario en imagen
+curl -X POST http://localhost:3000/comments \
+  -H "Content-Type: application/json" \
+  -d '{
+    "content": "¡Qué hermosa foto!",
+    "userId": "user-123",
+    "imageId": "img-456"
+  }'
+
+# Responder a un comentario (comentario anidado)
+curl -X POST http://localhost:3000/comments \
+  -H "Content-Type: application/json" \
+  -d '{
+    "content": "¡Gracias! Fue tomada en la playa",
+    "userId": "user-789",
+    "imageId": "img-456",
+    "parentCommentId": "comment-123"
+  }'
+
+# Listar comentarios de imagen
+curl -X GET http://localhost:3000/comments/image/img-456
+```
+
 ## 💡 Ejemplos de Uso
 
 ### Flujo Completo
@@ -346,6 +408,32 @@ curl -X GET http://localhost:3000/images/collection/$COLLECTION_ID
 
 # 5. Listar colecciones del usuario
 curl -X GET http://localhost:3000/collections/user/$USER_ID
+
+# 6. Agregar comentario a la imagen
+IMAGE_ID=$(curl -s -X GET http://localhost:3000/images/collection/$COLLECTION_ID | jq -r '.[0].id')
+
+curl -X POST http://localhost:3000/comments \
+  -H "Content-Type: application/json" \
+  -d '{
+    "content": "¡Excelente foto del viaje!",
+    "userId": "'$USER_ID'",
+    "imageId": "'$IMAGE_ID'"
+  }'
+
+# 7. Responder al comentario
+COMMENT_ID=$(curl -s -X GET http://localhost:3000/comments/image/$IMAGE_ID | jq -r '.[0].id')
+
+curl -X POST http://localhost:3000/comments \
+  -H "Content-Type: application/json" \
+  -d '{
+    "content": "¡Gracias! Fue un viaje increíble",
+    "userId": "'$USER_ID'",
+    "imageId": "'$IMAGE_ID'",
+    "parentCommentId": "'$COMMENT_ID'"
+  }'
+
+# 8. Ver todos los comentarios de la imagen
+curl -X GET http://localhost:3000/comments/image/$IMAGE_ID
 ```
 
 ## 🛠️ Tecnologías Utilizadas
@@ -413,4 +501,4 @@ ISC
 
 ---
 
-**Última actualización**: Abril 28, 2026
+**Última actualización**: Abril 28, 2026 (Comentarios agregados)

@@ -14,8 +14,12 @@
     "start": "node dist/main.js",
     "build": "tsc && tsc-alias",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "prisma-initial-migration": "npx prisma migrate dev --name init",
-    "prisma-generate-client": "prisma generate"
+    "prisma-migrate": "npx prisma migrate dev",
+    "prisma-migrate-deploy": "npx prisma migrate deploy",
+    "prisma-generate-client": "prisma generate",
+    "prisma-studio": "prisma studio",
+    "prisma-format": "prisma format",
+    "prisma-validate": "prisma validate"
   },
   "dependencies": {
     "@prisma/adapter-better-sqlite3": "^7.7.0",

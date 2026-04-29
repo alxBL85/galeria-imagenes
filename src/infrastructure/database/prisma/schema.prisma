@@ -4,51 +4,51 @@ datasource db {
 
 generator client {
   provider = "prisma-client"
-  output = "./client"
+  output   = "./client"
 }
 
 model User {
-  id          String  @id
-  email       String  @unique
+  id          String       @id
+  email       String       @unique
   password    String
   collections Collection[]
   comments    Comment[]
 }
 
 model Collection {
-  id        String @id
+  id        String   @id
   name      String
   type      String
   createdAt DateTime
   userId    String
 
-  user      User @relation(fields: [userId], references: [id])
-  images    Image[]
+  user   User    @relation(fields: [userId], references: [id])
+  images Image[]
 }
 
 model Image {
-  id            String @id
-  name          String
-  description   String
-  path          String
-  createdAt     DateTime
-  collectionId  String
+  id           String   @id
+  name         String
+  description  String
+  path         String
+  createdAt    DateTime
+  collectionId String
 
-  collection    Collection @relation(fields: [collectionId], references: [id])
-  comments      Comment[]
+  collection Collection @relation(fields: [collectionId], references: [id])
+  comments   Comment[]
 }
 
 model Comment {
-  id              String    @id
+  id              String   @id
   content         String
-  createdAt       DateTime  @default(now())
-  updatedAt       DateTime  @updatedAt
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
   userId          String
   imageId         String
   parentCommentId String?
 
-  user            User      @relation(fields: [userId], references: [id])
-  image           Image     @relation(fields: [imageId], references: [id])
-  parentComment   Comment?  @relation("CommentReplies", fields: [parentCommentId], references: [id])
-  replies         Comment[] @relation("CommentReplies")
+  user          User      @relation(fields: [userId], references: [id])
+  image         Image     @relation(fields: [imageId], references: [id])
+  parentComment Comment?  @relation("CommentReplies", fields: [parentCommentId], references: [id])
+  replies       Comment[] @relation("CommentReplies")
 }
