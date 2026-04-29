@@ -246,14 +246,13 @@ El servidor corre en `http://localhost:3000` y expone los siguientes endpoints:
 
 | Método | Endpoint | Descripción | Body |
 |--------|----------|-------------|------|
-| POST | `/users` | Registrar nuevo usuario | `{ id, email, password }` |
+| POST | `/users` | Registrar nuevo usuario | `{ email, password }` |
 
 **Ejemplo:**
 ```bash
 curl -X POST http://localhost:3000/users \
   -H "Content-Type: application/json" \
   -d '{
-    "id": "user-123",
     "email": "user@example.com",
     "password": "password123"
   }'
@@ -263,23 +262,22 @@ curl -X POST http://localhost:3000/users \
 
 | Método | Endpoint | Descripción | Body |
 |--------|----------|-------------|------|
-| POST | `/collections` | Crear nueva colección | `{ id, name, type, createdAt, userId }` |
+| POST | `/collections` | Crear nueva colección | `{ name, type, createdAt, userId }` |
 | GET | `/collections/user/:userId` | Listar colecciones de un usuario | - |
 
 **Ejemplo:**
 ```bash
-# Crear colección
+# Crear colección (reemplaza "user-123" con un ID de usuario real)
 curl -X POST http://localhost:3000/collections \
   -H "Content-Type: application/json" \
   -d '{
-    "id": "col-123",
     "name": "Vacaciones 2026",
     "type": "vacation",
     "createdAt": "2026-04-28T10:00:00Z",
     "userId": "user-123"
   }'
 
-# Listar colecciones del usuario
+# Listar colecciones del usuario (reemplaza "user-123" con un ID de usuario real)
 curl -X GET http://localhost:3000/collections/user/user-123
 ```
 
@@ -308,38 +306,46 @@ curl -X GET http://localhost:3000/images/collection/col-123
 ### Flujo Completo
 
 ```bash
-# 1. Crear un usuario
-curl -X POST http://localhost:3000/users \
+# 1. Crear un usuario (el ID se genera automáticamente)
+USER_RESPONSE=$(curl -s -X POST http://localhost:3000/users \
   -H "Content-Type: application/json" \
   -d '{
-    "id": "user-001",
     "email": "alex@example.com",
     "password": "secure123"
-  }'
+  }')
 
-# 2. Crear una colección
-curl -X POST http://localhost:3000/collections \
+# Extraer el ID del usuario creado
+USER_ID=$(echo $USER_RESPONSE | grep -o '"id":"[^"]*"' | cut -d'"' -f4)
+
+echo "Usuario creado con ID: $USER_ID"
+
+# 2. Crear una colección usando el ID real del usuario
+COLLECTION_RESPONSE=$(curl -s -X POST http://localhost:3000/collections \
   -H "Content-Type: application/json" \
   -d '{
-    "id": "col-001",
     "name": "Fotos del Viaje",
     "type": "travel",
     "createdAt": "2026-04-28T10:00:00Z",
-    "userId": "user-001"
-  }'
+    "userId": "'$USER_ID'"
+  }')
 
-# 3. Subir una imagen
+# Extraer el ID de la colección creada
+COLLECTION_ID=$(echo $COLLECTION_RESPONSE | grep -o '"id":"[^"]*"' | cut -d'"' -f4)
+
+echo "Colección creada con ID: $COLLECTION_ID"
+
+# 3. Subir una imagen usando el ID real de la colección
 curl -X POST http://localhost:3000/images \
   -F "image=@./photo.jpg" \
   -F "name=Foto 1" \
   -F "description=Primera foto del viaje" \
-  -F "collectionId=col-001"
+  -F "collectionId=$COLLECTION_ID"
 
-# 4. Listar imágenes
-curl -X GET http://localhost:3000/images/collection/col-001
+# 4. Listar imágenes de la colección
+curl -X GET http://localhost:3000/images/collection/$COLLECTION_ID
 
 # 5. Listar colecciones del usuario
-curl -X GET http://localhost:3000/collections/user/user-001
+curl -X GET http://localhost:3000/collections/user/$USER_ID
 ```
 
 ## 🛠️ Tecnologías Utilizadas
